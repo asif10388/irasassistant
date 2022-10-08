@@ -1,8 +1,9 @@
 import type { NextPage } from 'next';
 import { useForm } from '@mantine/form';
 import { Container } from '@mantine/core';
-import axios from 'axios';
 import { useStore } from '../store';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import {
   TextInput,
   PasswordInput,
@@ -22,30 +23,23 @@ const Auth: NextPage = (props: PaperProps) => {
     },
 
     validate: {
-      password: (val) =>
+      password: (val: string | any[]) =>
         val.length <= 6
           ? 'Password should include at least 6 characters'
           : null,
     },
   });
 
-  const { token, setToken } = useStore((state: any) => state.auth());
+  const { loginWithCreds, getToken, token } = useStore((state: any) =>
+    state.auth()
+  );
+  const router = useRouter();
 
-  const loginWithId = async (values: { email: string; password: string }) => {
-    const res = await axios.post(
-      'https://iras.iub.edu.bd:8079//v2/account/token',
-      {
-        email: values.email,
-        password: values.password,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-    setToken(res.data.data[0].access_token);
-  };
+  useEffect(() => {
+    if (token) {
+      router.push('/dashboard');
+    }
+  }, [token]);
   return (
     <Container size='xs'>
       <Paper radius='md' p='xl' withBorder {...props}>
@@ -54,8 +48,9 @@ const Auth: NextPage = (props: PaperProps) => {
         </Text>
 
         <form
-          onSubmit={form.onSubmit((values) => {
-            loginWithId(values);
+          onSubmit={form.onSubmit((values: any) => {
+            loginWithCreds(values);
+            router.push('/dashboard');
           })}
         >
           <Stack>

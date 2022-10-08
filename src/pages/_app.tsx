@@ -1,20 +1,22 @@
-import { AppProps } from 'next/app';
+import '../../styles/globals.css';
+import type { AppProps } from 'next/app';
 import { MantineProvider } from '@mantine/core';
+import { AppContainer } from '../comps/AppContainer';
 
-export default function App(props: AppProps) {
-  const { Component, pageProps } = props;
-
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{
-          colorScheme: 'light',
-        }}
-      >
+    <MantineProvider
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{
+        colorScheme: 'light',
+      }}
+    >
+      <AppContainer>
         <Component {...pageProps} />
-      </MantineProvider>
-    </>
+      </AppContainer>
+    </MantineProvider>
   );
 }
+
+export default MyApp;

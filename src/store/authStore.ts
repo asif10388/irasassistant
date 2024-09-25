@@ -1,6 +1,6 @@
-import axios from 'axios';
-import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import axios from "axios";
+import create from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 export interface Token {
   access_token: string;
@@ -24,30 +24,23 @@ export const useAuthStore = create<AuthStore>()(
         authenticated: false,
 
         loginWithCreds: async (creds: any) => {
-          const res = await axios.post(
-            'https://iras.iub.edu.bd:8079//v2/account/token',
-            {
+          try {
+            const res = await axios.post("/api/login", {
               email: creds.email,
               password: creds.password,
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            }
-          );
-          set({ token: res.data.data[0], authenticated: true });
+            });
+            set({ token: res.data.data[0], authenticated: true });
+          } catch (error) {
+            console.error(error);
+          }
         },
 
         getUser: async () => {
-          const res = await axios.get(
-            'https://iras.iub.edu.bd:8079//v2/persons/userprofile',
-            {
-              headers: {
-                Authorization: `Bearer ${get().token?.access_token}`,
-              },
-            }
-          );
+          const res = await axios.get("https://iras.iub.edu.bd:8079//v2/persons/userprofile", {
+            headers: {
+              Authorization: `Bearer ${get().token?.access_token}`,
+            },
+          });
           set({ user: res.data.data[0] });
           console.log(res.data.data[0]);
         },
@@ -61,7 +54,7 @@ export const useAuthStore = create<AuthStore>()(
         },
       }),
       {
-        name: 'token',
+        name: "token",
         getStorage: () => localStorage,
       }
     )

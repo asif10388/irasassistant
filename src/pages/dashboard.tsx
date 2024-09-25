@@ -1,31 +1,31 @@
-import { createStyles, Container, Title, Text, Button } from '@mantine/core';
-import axios from 'axios';
-import { useState } from 'react';
-import { DataTable } from '../comps/DataTable';
-import { useStore } from '../store';
+import { createStyles, Container, Title, Text, Button } from "@mantine/core";
+import axios from "axios";
+import { useState } from "react";
+import { DataTable } from "../comps/DataTable";
+import { useStore } from "../store";
 
 const useStyles = createStyles((theme) => ({
   root: {
-    height: '100%',
-    backgroundSize: 'cover',
-    backgroundColor: '#11284b',
-    backgroundPosition: 'center',
+    height: "100%",
+    backgroundSize: "cover",
+    backgroundColor: "#11284b",
+    backgroundPosition: "center",
     paddingTop: theme.spacing.xl * 1,
     paddingBottom: theme.spacing.xl * 1,
   },
 
   inner: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
 
-    [theme.fn.smallerThan('md')]: {
-      flexDirection: 'column',
+    [theme.fn.smallerThan("md")]: {
+      flexDirection: "column",
     },
   },
 
   image: {
-    [theme.fn.smallerThan('md')]: {
-      display: 'none',
+    [theme.fn.smallerThan("md")]: {
+      display: "none",
     },
   },
 
@@ -34,7 +34,7 @@ const useStyles = createStyles((theme) => ({
     paddingBottom: theme.spacing.xl,
     marginRight: theme.spacing.xl * 1,
 
-    [theme.fn.smallerThan('md')]: {
+    [theme.fn.smallerThan("md")]: {
       marginRight: 0,
     },
   },
@@ -43,8 +43,8 @@ const useStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     fontSize: 14,
 
-    [theme.fn.smallerThan('md')]: {
-      width: '100%',
+    [theme.fn.smallerThan("md")]: {
+      width: "100%",
     },
   },
 }));
@@ -56,27 +56,26 @@ const Dashboard = () => {
 
   const fetchCourses = async () => {
     const token = getToken();
-    const res = await axios.get(
-      'https://iras.iub.edu.bd:8079//api/v1/registration/2110182/all-offer-courses',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+
+    const res = await axios.get("/api/fetch_courses", {
+      headers: {
+        "Content-Type": "application/json",
+        authtoken: token,
+      },
+    });
+
     setData(res.data.data);
   };
 
   return (
     <div className={classes.root}>
-      <Container size='lg'>
+      <Container size="lg">
         <div className={classes.inner}>
           <div className={classes.content}>
             <Button
-              variant='gradient'
-              gradient={{ from: 'pink', to: 'yellow' }}
-              size='md'
+              variant="gradient"
+              gradient={{ from: "pink", to: "yellow" }}
+              size="md"
               className={classes.control}
               mt={40}
               mb={20}

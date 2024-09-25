@@ -1,21 +1,20 @@
-import type { NextPage } from "next";
+"use client";
+
 import { useForm } from "@mantine/form";
 import { Container } from "@mantine/core";
-import { useStore } from "../store";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+
 import {
-  TextInput,
-  PasswordInput,
   Text,
+  Stack,
   Paper,
   Group,
-  PaperProps,
   Button,
-  Stack,
+  TextInput,
+  PaperProps,
+  PasswordInput,
 } from "@mantine/core";
 
-const Auth: NextPage = (props: PaperProps) => {
+const LoginForm = (props: PaperProps) => {
   const form = useForm({
     initialValues: {
       email: "",
@@ -23,40 +22,25 @@ const Auth: NextPage = (props: PaperProps) => {
     },
 
     validate: {
-      password: (val: string | any[]) =>
+      password: (val: string) =>
         val.length <= 6 ? "Password should include at least 6 characters" : null,
     },
   });
 
-  const { loginWithCreds, getToken, token } = useStore((state: any) => state.auth());
-  const router = useRouter();
-
-  useEffect(() => {
-    if (token) {
-      router.push("/dashboard");
-    }
-  }, [token]);
   return (
     <Container size="xs">
       <Paper radius="md" p="xl" withBorder {...props}>
-        <Text size="lg" weight={500}>
-          Welcome to Iras Assistant, login with your IRAS credentials
-        </Text>
+        <Text size="lg">Welcome to Iras Assistant, login with your IRAS credentials</Text>
 
-        <form
-          onSubmit={form.onSubmit((values: any) => {
-            loginWithCreds(values);
-            // router.push('/dashboard');
-          })}
-        >
+        <form>
           <Stack>
             <TextInput
               required
               label="ID Number"
               placeholder="2110182"
               value={form.values.email}
-              onChange={(event) => form.setFieldValue("email", event.currentTarget.value)}
               error={form.errors.email && "Invalid email"}
+              onChange={(event) => form.setFieldValue("email", event.currentTarget.value)}
             />
 
             <PasswordInput
@@ -69,7 +53,7 @@ const Auth: NextPage = (props: PaperProps) => {
             />
           </Stack>
 
-          <Group position="apart" mt="xl">
+          <Group mt="xl">
             <Button type="submit">Login</Button>
           </Group>
         </form>
@@ -78,4 +62,4 @@ const Auth: NextPage = (props: PaperProps) => {
   );
 };
 
-export default Auth;
+export default LoginForm;

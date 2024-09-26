@@ -13,16 +13,17 @@ export const AppContainer = ({ children }: AppShellProps) => {
 
   return (
     <AppShell
+      header={{ height: 50 }}
       styles={{
         main: {
           padding: "0",
           display: "flex",
           minHeight: "100vh",
+          alignItems: "center",
           flexDirection: "column",
           justifyContent: "center",
         },
       }}
-      header={{ height: 100 }}
     >
       <AppShell.Header>
         <Header />

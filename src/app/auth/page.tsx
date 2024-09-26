@@ -1,5 +1,5 @@
-import LoginForm from "../../comps/Auth/Login";
+import AuthenticationForm from "@comps/Auth/Auth";
 
 export default function AuthPage() {
-  return <LoginForm />;
+  return <AuthenticationForm />;
 }

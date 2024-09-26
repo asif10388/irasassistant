@@ -21,12 +21,14 @@
       }
     ],
     "paths": {
+      "@lib/*": ["lib/*"],
       "@comps/*": ["comps/*"],
       "@pages/*": ["pages/*"],
       "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"],
       "@state/*": ["state/*"],
-      "@styles/*": ["styles/*"]
+      "@styles/*": ["styles/*"],
+      "@assets/*": ["assets/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

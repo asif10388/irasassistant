@@ -6,28 +6,28 @@
 }
 
 .inner {
-  height: rem(56px);
   display: flex;
-  justify-content: space-between;
+  height: rem(56px);
   align-items: center;
+  justify-content: space-between;
 }
 
 .link {
-  display: block;
   line-height: 1;
-  padding: rem(8px) rem(12px);
-  border-radius: var(--mantine-radius-sm);
-  text-decoration: none;
-  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
-  font-size: var(--mantine-font-size-sm);
+  display: block;
   font-weight: 500;
+  text-decoration: none;
+  padding: rem(8px) rem(12px);
+  font-size: var(--mantine-font-size-sm);
+  border-radius: var(--mantine-radius-sm);
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
 
   @mixin hover {
     background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
   }
 
   [data-mantine-color-scheme] &[data-active] {
-    background-color: var(--mantine-color-blue-filled);
     color: var(--mantine-color-white);
+    background-color: var(--mantine-color-blue-filled);
   }
 }

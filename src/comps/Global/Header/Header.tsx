@@ -2,7 +2,7 @@ import Image from "next/image";
 import classes from "./Header.module.css";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { Container, Group, Burger } from "@mantine/core";
+import { Container, Group, Button } from "@mantine/core";
 
 const links = [
   { link: "/", label: "Home" },
@@ -32,11 +32,13 @@ export default function Header() {
     <header className={classes.header}>
       <Container size="md" className={classes.inner}>
         <Image src="/favicon.svg" alt="Mantine logo" width={32} height={32} />
-        <Group gap={5} visibleFrom="xs">
-          {items}
-        </Group>
 
-        <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
+        <Group gap={5}>
+          {items}
+          <Button onClick={toggle} aria-label="Logout" variant="light">
+            Logout
+          </Button>
+        </Group>
       </Container>
     </header>
   );

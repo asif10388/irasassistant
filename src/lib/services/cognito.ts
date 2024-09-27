@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import {
   SignUpCommand,
   GetUserCommand,
@@ -99,26 +101,24 @@ export const getCurrentUser = async () => {
     return response;
   } catch (error) {
     console.error("Error getting current user: ", error);
-    localStorage.removeItem("accessToken");
-    window.location.href = "/auth";
+    return false;
   }
 };
 
-export const logout = async () => {
-  const accessToken = sessionStorage.getItem("accessToken");
-  if (!accessToken) throw new Error("No access token found");
-
-  const params = {
-    AccessToken: accessToken,
-  };
+export const exchangeTokenWithCode = async (code: string) => {
+  const lambdaUrl = process.env.AWS_LAMBDA_FUNCTION_URL;
 
   try {
-    const command = new GetUserCommand(params);
-    await cognitoClient.send(command);
-    sessionStorage.clear();
-    window.location.href = "/auth";
+    const response = await axios.get(`${lambdaUrl}?code=${code}`);
+    const { access_token, id_token, refresh_token } = response.data;
+
+    sessionStorage.setItem("idToken", id_token);
+    sessionStorage.setItem("accessToken", access_token);
+    sessionStorage.setItem("refreshToken", refresh_token);
+
+    return response;
   } catch (error) {
-    console.error("Error logging out: ", error);
-    throw error;
+    console.error("Error signing in: ", error);
+    return false;
   }
 };

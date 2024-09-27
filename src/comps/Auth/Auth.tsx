@@ -44,6 +44,10 @@ export default function AuthenticationForm(props: PaperProps) {
     },
   });
 
+  const redirectToGoogle = () => {
+    window.location.href = `${process.env.COGNITO_DOMAIN}/oauth2/authorize?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&scope=${process.env.COGNITO_SCOPE}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
+  };
+
   const handleSubmit = async () => {
     if (type === "register") {
       router.push(`/auth/verification?email=${form.values.email}`);
@@ -63,7 +67,9 @@ export default function AuthenticationForm(props: PaperProps) {
         </Text>
 
         <Group grow mb="md" mt="md">
-          <GoogleButton radius="xl">Google</GoogleButton>
+          <GoogleButton radius="xl" onClick={redirectToGoogle}>
+            Google
+          </GoogleButton>
         </Group>
 
         <Divider label="Or continue with email" labelPosition="center" my="lg" />

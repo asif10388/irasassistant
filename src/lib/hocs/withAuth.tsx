@@ -1,8 +1,7 @@
-import axios from "axios";
 import { Loader } from "@mantine/core";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getCurrentUser } from "@lib/services/cognito";
+import { exchangeTokenWithCode, getCurrentUser } from "@lib/services/cognito";
 
 export default function withAuth(Component: React.FC<any>) {
   return function WithAuth(
@@ -15,60 +14,48 @@ export default function withAuth(Component: React.FC<any>) {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    // Prevent double execution in development mode (Strict Mode)
+    const isInitialRender = useRef(true);
+
     useEffect(() => {
-      (async () => {
-        const user = await getCurrentUser();
-        const authorization_code = search.get("code");
+      const authenticateUser = async () => {
+        const code = search.get("code");
         const accessToken = sessionStorage.getItem("accessToken");
 
-        if (!accessToken || !user) {
-          if (authorization_code) {
-            console.log(authorization_code);
+        // Check if access token already exists (avoid unnecessary calls)
+        if (accessToken) {
+          const user = await getCurrentUser();
+          setIsAuthenticated(!!user);
+          setLoading(false);
+          return;
+        }
 
-            try {
-              //   const getToken = await axios.post(
-              //     `${process.env.COGNITO_DOMAIN}/oauth2/token?client_id=${process.env.COGNITO_CLIENT_ID}&code=${authorization_code}&grant_type=${process.env.COGNITO_GRANT_TYPE}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`,
-              //     {
-              //       headers: {
-              //         "Content-Type": "application/x-www-form-urlencoded",
-              //       },
-              //     }
-              //   );
-
-              let config = {
-                method: "post",
-                maxBodyLength: Infinity,
-                url: `https://irasassistant.auth.us-east-1.amazoncognito.com/oauth2/token?client_id=7l0h2agvntoic1qoo4m582as7f&code=${authorization_code}&grant_type=authorization_code&redirect_uri=http://localhost:3000/dashboard`,
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-              };
-
-              axios
-                .request(config)
-                .then((response) => {
-                  sessionStorage.setItem("idToken", response.data.idToken);
-                  sessionStorage.setItem("accessToken", response.data.accessToken);
-                  sessionStorage.setItem("refreshToken", response.data.refreshToken);
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-
-              setIsAuthenticated(true);
-            } catch (error) {
-              console.error("Error signing in: ", error);
-              //   router.push("/auth");
-              console.log("Error signing in: ", error);
-            }
+        // If no access token, and a code exists (Google sign-in flow)
+        if (code && !accessToken) {
+          const tokenExchangeResult = await exchangeTokenWithCode(code);
+          if (tokenExchangeResult) {
+            const user = await getCurrentUser();
+            setIsAuthenticated(!!user);
           }
-        } else setIsAuthenticated(true);
+        }
 
         setLoading(false);
-      })();
+      };
+
+      // Avoid running the effect twice in development mode
+      if (isInitialRender.current) {
+        isInitialRender.current = false;
+        authenticateUser();
+      }
     }, [router, search]);
 
     if (loading) return <Loader color="blue" />;
-    return isAuthenticated ? <Component {...props} /> : null;
+
+    if (!isAuthenticated) {
+      router.push("/auth");
+      return null;
+    }
+
+    return <Component {...props} />;
   };
 }

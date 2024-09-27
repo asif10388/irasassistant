@@ -28,6 +28,11 @@ export default function Header() {
     </a>
   ));
 
+  const logout = () => {
+    sessionStorage.clear();
+    window.location.href = `${process.env.COGNITO_DOMAIN}/logout?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&logout_uri=${process.env.COGNITO_LOGOUT_URI}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
+  };
+
   return (
     <header className={classes.header}>
       <Container size="md" className={classes.inner}>
@@ -35,7 +40,7 @@ export default function Header() {
 
         <Group gap={5}>
           {items}
-          <Button onClick={toggle} aria-label="Logout" variant="light">
+          <Button onClick={logout} aria-label="Logout" variant="light">
             Logout
           </Button>
         </Group>

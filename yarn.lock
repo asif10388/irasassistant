@@ -535,6 +535,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.7":
+  version: 7.25.7
+  resolution: "@babel/runtime@npm:7.25.7"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 10c0/86b7829d2fc9343714a9afe92757cf96c4dc799006ca61d73cda62f4b9e29bfa1ce36794955bc6cb4c188f5b10db832c949339895e1bbe81a69022d9d578ce29
+  languageName: node
+  linkType: hard
+
 "@eslint-community/eslint-utils@npm:^4.2.0":
   version: 4.4.0
   resolution: "@eslint-community/eslint-utils@npm:4.4.0"
@@ -704,6 +713,30 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
   checksum: 10c0/818674346619c2d30f53114a6b6da2b01cf6cf9ea1e262046964769d47c512fd75300be218651062df426822cfb38a0bc76d093798c8b4ddef66576c6fcf46e2
+  languageName: node
+  linkType: hard
+
+"@mantine/notifications@npm:^7.13.2":
+  version: 7.13.2
+  resolution: "@mantine/notifications@npm:7.13.2"
+  dependencies:
+    "@mantine/store": "npm:7.13.2"
+    react-transition-group: "npm:4.4.5"
+  peerDependencies:
+    "@mantine/core": 7.13.2
+    "@mantine/hooks": 7.13.2
+    react: ^18.2.0
+    react-dom: ^18.2.0
+  checksum: 10c0/637ff28c36989b13e5abb6a94be67fd08444f9a47b3b66d8d834c1741f5219288c834e07d1bdc40aba0f9f9e7d24cb91627c56a9bfee9eedc698cc64688a96d5
+  languageName: node
+  linkType: hard
+
+"@mantine/store@npm:7.13.2":
+  version: 7.13.2
+  resolution: "@mantine/store@npm:7.13.2"
+  peerDependencies:
+    react: ^18.2.0
+  checksum: 10c0/4c6f95e5aa06d794111372d5c513f8b0c30cd6e7421bbd1f68d71ac75becd7b6f99dba84be7543a2995ce46ca6e4293802fc2d0ec8304cd871740b0f404f1df8
   languageName: node
   linkType: hard
 
@@ -1705,6 +1738,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aws-jwt-verify@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "aws-jwt-verify@npm:4.0.1"
+  checksum: 10c0/9ab117a9ef0bf062c75090270b786f02d4e95581f21370428da1f5800536a03f3ee1143895eecfb712ea04f37efa4826d8902f6e0caa853174e5ea2fcfdd6a54
+  languageName: node
+  linkType: hard
+
 "axe-core@npm:=4.7.0":
   version: 4.7.0
   resolution: "axe-core@npm:4.7.0"
@@ -2027,6 +2067,16 @@ __metadata:
   dependencies:
     esutils: "npm:^2.0.2"
   checksum: 10c0/c96bdccabe9d62ab6fea9399fdff04a66e6563c1d6fb3a3a063e8d53c3bb136ba63e84250bbf63d00086a769ad53aef92d2bd483f03f837fc97b71cbee6b2520
+  languageName: node
+  linkType: hard
+
+"dom-helpers@npm:^5.0.1":
+  version: 5.2.1
+  resolution: "dom-helpers@npm:5.2.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.8.7"
+    csstype: "npm:^3.0.2"
+  checksum: 10c0/f735074d66dd759b36b158fa26e9d00c9388ee0e8c9b16af941c38f014a37fc80782de83afefd621681b19ac0501034b4f1c4a3bff5caa1b8667f0212b5e124c
   languageName: node
   linkType: hard
 
@@ -3535,9 +3585,11 @@ __metadata:
     "@mantine/core": "npm:7.12.2"
     "@mantine/form": "npm:^7.13.0"
     "@mantine/hooks": "npm:7.12.2"
+    "@mantine/notifications": "npm:^7.13.2"
     "@types/node": "npm:20.14.8"
     "@types/react": "npm:18.3.3"
     "@types/react-dom": "npm:18.3.0"
+    aws-jwt-verify: "npm:^4.0.1"
     axios: "npm:^1.7.7"
     eslint: "npm:8.57.0"
     eslint-config-next: "npm:14.2.4"
@@ -4077,7 +4129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -4202,6 +4254,21 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 10c0/33d38a6d96cf584842695b50c341980944ece23a42155bf0bd1958f02396adb185c7720b88678dc677817fe111783059c0ebcdf7761644006892583b10e258ee
+  languageName: node
+  linkType: hard
+
+"react-transition-group@npm:4.4.5":
+  version: 4.4.5
+  resolution: "react-transition-group@npm:4.4.5"
+  dependencies:
+    "@babel/runtime": "npm:^7.5.5"
+    dom-helpers: "npm:^5.0.1"
+    loose-envify: "npm:^1.4.0"
+    prop-types: "npm:^15.6.2"
+  peerDependencies:
+    react: ">=16.6.0"
+    react-dom: ">=16.6.0"
+  checksum: 10c0/2ba754ba748faefa15f87c96dfa700d5525054a0141de8c75763aae6734af0740e77e11261a1e8f4ffc08fd9ab78510122e05c21c2d79066c38bb6861a886c82
   languageName: node
   linkType: hard
 

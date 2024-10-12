@@ -1,10 +1,17 @@
 import axios from "axios";
 
+type CognitoAuthResult = {
+  error?: string;
+  success: boolean;
+  result?: AuthenticationResultType;
+};
+
 import {
   SignUpCommand,
   GetUserCommand,
   InitiateAuthCommand,
   ConfirmSignUpCommand,
+  AuthenticationResultType,
   CognitoIdentityProviderClient,
 } from "@aws-sdk/client-cognito-identity-provider";
 
@@ -32,7 +39,6 @@ export const signUpWithEmail = async (email: string, password: string) => {
 
     return response;
   } catch (error) {
-    console.error("Error signing up: ", error);
     throw error;
   }
 };
@@ -55,10 +61,14 @@ export const confirmSignUpWithEmail = async (email: string, code: string) => {
   }
 };
 
-export const signInWithEmail = async (email: string, password: string) => {
+export const signInWithEmail = async (
+  email: string,
+  password: string
+): Promise<CognitoAuthResult> => {
   const params = {
     AuthFlow: "USER_PASSWORD_AUTH" as const,
     ClientId: process.env.COGNITO_CLIENT_ID,
+
     AuthParameters: {
       USERNAME: email,
       PASSWORD: password,
@@ -70,15 +80,21 @@ export const signInWithEmail = async (email: string, password: string) => {
     const { AuthenticationResult } = await cognitoClient.send(command);
 
     if (AuthenticationResult) {
-      sessionStorage.setItem("idToken", AuthenticationResult.IdToken || "");
-      sessionStorage.setItem("accessToken", AuthenticationResult.AccessToken || "");
-      sessionStorage.setItem("refreshToken", AuthenticationResult.RefreshToken || "");
-
-      return AuthenticationResult;
+      return {
+        success: true,
+        result: AuthenticationResult,
+      };
     }
+
+    return {
+      success: false,
+      error: "An unknown error occurred.",
+    };
   } catch (error) {
-    console.error("Error signing in: ", error);
-    throw error;
+    return {
+      success: false,
+      error: (error as Error).message || "An unknown error occurred.",
+    };
   }
 };
 

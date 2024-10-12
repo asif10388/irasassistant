@@ -6,6 +6,7 @@ import { Paper, Text, Title, Button, Container, TextInput } from "@mantine/core"
 import classes from "./Auth.module.css";
 import { useForm } from "@mantine/form";
 import { confirmSignUpWithEmail } from "lib/services/cognito";
+import axios from "axios";
 
 export default function VerificationForm() {
   const router = useRouter();
@@ -24,8 +25,18 @@ export default function VerificationForm() {
   });
 
   const handleSubmit = async () => {
-    await confirmSignUpWithEmail(form.values.email, form.values.confirmationCode);
-    router.push("/auth");
+    try {
+      const response = await axios.post("/api/auth/verification", {
+        email: form.values.email,
+        confirmationCode: form.values.confirmationCode,
+      });
+
+      if (response.status === 200) {
+        router.push("/auth");
+      }
+    } catch (error) {
+      console.error("Error confirming user: ", error);
+    }
   };
 
   return (

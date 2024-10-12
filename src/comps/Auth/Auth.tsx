@@ -4,8 +4,7 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { GoogleButton } from "@assets/GoogleButton";
 import { useToggle, upperFirst } from "@mantine/hooks";
-import { signInWithEmail, signUpWithEmail } from "@lib/services/cognito";
-
+import { notifications } from "@mantine/notifications";
 import {
   Text,
   Paper,
@@ -19,6 +18,7 @@ import {
   PaperProps,
   PasswordInput,
 } from "@mantine/core";
+import axios from "axios";
 
 export default function AuthenticationForm(props: PaperProps) {
   const router = useRouter();
@@ -45,18 +45,49 @@ export default function AuthenticationForm(props: PaperProps) {
   });
 
   const redirectToGoogle = () => {
-    window.location.href = `${process.env.COGNITO_DOMAIN}/oauth2/authorize?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&scope=${process.env.COGNITO_SCOPE}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
+    const params = new URLSearchParams({
+      scope: process.env.COGNITO_SCOPE || "",
+      client_id: process.env.COGNITO_CLIENT_ID || "",
+      redirect_uri: process.env.COGNITO_REDIRECT_URI || "",
+      response_type: process.env.COGNITO_RESPONSE_TYPE || "",
+    });
+
+    const url = `${process.env.COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
+    window.location.href = url;
   };
 
   const handleSubmit = async () => {
-    if (type === "register") {
-      router.push(`/auth/verification?email=${form.values.email}`);
-      await signUpWithEmail(form.values.email, form.values.password);
-      return;
-    }
+    try {
+      if (type === "register") {
+        const response = await axios.post("/api/auth/register", {
+          email: form.values.email,
+          password: form.values.password,
+        });
 
-    await signInWithEmail(form.values.email, form.values.password);
-    router.push("/dashboard");
+        if (response.status === 200) {
+          router.push(`/auth/verification?email=${form.values.email}`);
+        }
+
+        return;
+      }
+
+      const response = await axios.post("/api/auth/login", {
+        email: form.values.email,
+        password: form.values.password,
+      });
+
+      if (response.status === 200) {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error logging in: ", error);
+
+      notifications.show({
+        color: "red",
+        title: "Error",
+        message: "Error logging in",
+      });
+    }
   };
 
   return (

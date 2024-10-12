@@ -1,7 +1,7 @@
 import { Loader } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { exchangeTokenWithCode, getCurrentUser } from "@lib/services/cognito";
+import { exchangeTokenWithCode, getCurrentUser } from "@lib/auth/cognito";
 
 export default function withAuth(Component: React.FC<any>) {
   return function WithAuth(

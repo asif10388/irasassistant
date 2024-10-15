@@ -3,6 +3,7 @@ import classes from "./Header.module.css";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { Container, Group, Button } from "@mantine/core";
+import { revokeOAuthToken } from "@lib/auth/cognito";
 
 const links = [
   { link: "/", label: "Home" },
@@ -28,9 +29,17 @@ export default function Header() {
     </a>
   ));
 
-  const logout = () => {
-    sessionStorage.clear();
-    window.location.href = `${process.env.COGNITO_DOMAIN}/logout?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&logout_uri=${process.env.COGNITO_LOGOUT_URI}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
+  const logout = async () => {
+    try {
+      const revoke = await revokeOAuthToken();
+      if (!revoke) throw new Error("Error revoking token");
+
+      sessionStorage.clear();
+
+      window.location.href = `${process.env.COGNITO_DOMAIN}/logout?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&logout_uri=${process.env.COGNITO_LOGOUT_URI}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
   };
 
   return (

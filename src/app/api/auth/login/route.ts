@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import { signInWithEmail } from "@lib/services/cognito";
+import { signInWithEmail } from "@lib/auth/cognito";
 
 export async function POST(request: NextRequest) {
   try {

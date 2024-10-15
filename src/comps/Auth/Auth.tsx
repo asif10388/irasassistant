@@ -44,18 +44,6 @@ export default function AuthenticationForm(props: PaperProps) {
     },
   });
 
-  const redirectToGoogle = () => {
-    const params = new URLSearchParams({
-      scope: process.env.COGNITO_SCOPE || "",
-      client_id: process.env.COGNITO_CLIENT_ID || "",
-      redirect_uri: process.env.COGNITO_REDIRECT_URI || "",
-      response_type: process.env.COGNITO_RESPONSE_TYPE || "",
-    });
-
-    const url = `${process.env.COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
-    window.location.href = url;
-  };
-
   const handleSubmit = async () => {
     try {
       if (type === "register") {
@@ -97,11 +85,13 @@ export default function AuthenticationForm(props: PaperProps) {
           Welcome to Mantine, {type} with
         </Text>
 
-        <Group grow mb="md" mt="md">
-          <GoogleButton radius="xl" onClick={redirectToGoogle}>
-            Google
-          </GoogleButton>
-        </Group>
+        <a
+          href={`${process.env.COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&scope=${process.env.COGNITO_SCOPE}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}&prompt=select_account`}
+        >
+          <Group grow mb="md" mt="md">
+            <GoogleButton radius="xl">Google</GoogleButton>
+          </Group>
+        </a>
 
         <Divider label="Or continue with email" labelPosition="center" my="lg" />
 

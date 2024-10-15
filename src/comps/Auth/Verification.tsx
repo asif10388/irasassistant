@@ -5,7 +5,7 @@ import { Paper, Text, Title, Button, Container, TextInput } from "@mantine/core"
 
 import classes from "./Auth.module.css";
 import { useForm } from "@mantine/form";
-import { confirmSignUpWithEmail } from "lib/services/cognito";
+import { confirmSignUpWithEmail } from "lib/auth/cognito";
 import axios from "axios";
 
 export default function VerificationForm() {

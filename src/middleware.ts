@@ -6,20 +6,20 @@ const publicRoutes = ["/", "/auth"];
 const protectedRoutes = ["/dashboard"];
 
 export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.includes(path);
+  //   const path = request.nextUrl.pathname;
+  //   const isProtectedRoute = protectedRoutes.includes(path);
 
-  const cookie = cookies().get("accessToken")?.value;
+  //   const cookie = cookies().get("accessToken")?.value;
 
-  if (!cookie && isProtectedRoute) {
-    return NextResponse.redirect(new URL("/auth", request.nextUrl));
-  }
+  //   if (!cookie && isProtectedRoute) {
+  //     return NextResponse.redirect(new URL("/auth", request.nextUrl));
+  //   }
 
-  const token = await verifyToken(cookie as string);
+  //   const token = await verifyToken(cookie as string);
 
-  if (!token?.username && isProtectedRoute) {
-    return NextResponse.redirect(new URL("/auth", request.nextUrl));
-  }
+  //   if (!token?.username && isProtectedRoute) {
+  //     return NextResponse.redirect(new URL("/auth", request.nextUrl));
+  //   }
 
   return NextResponse.next();
 }

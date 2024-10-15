@@ -9,6 +9,7 @@ type CognitoAuthResult = {
 import {
   SignUpCommand,
   GetUserCommand,
+  RevokeTokenCommand,
   InitiateAuthCommand,
   ConfirmSignUpCommand,
   AuthenticationResultType,
@@ -135,6 +136,27 @@ export const exchangeTokenWithCode = async (code: string) => {
     return response;
   } catch (error) {
     console.error("Error signing in: ", error);
+    return false;
+  }
+};
+
+export const revokeOAuthToken = async () => {
+  try {
+    const refreshToken = sessionStorage.getItem("refreshToken");
+    if (!refreshToken) return false;
+
+    const params = {
+      Token: refreshToken,
+      ClientId: process.env.COGNITO_CLIENT_ID,
+    };
+
+    const command = new RevokeTokenCommand(params);
+    const response = await cognitoClient.send(command);
+
+    console.log("Token revoked successfully", response);
+    return true;
+  } catch (error) {
+    console.error("Error revoking token: ", error);
     return false;
   }
 };

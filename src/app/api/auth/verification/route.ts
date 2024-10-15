@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { confirmSignUpWithEmail } from "@lib/services/cognito";
+import { confirmSignUpWithEmail } from "@lib/auth/cognito";
 
 export async function POST(request: NextRequest) {
   try {

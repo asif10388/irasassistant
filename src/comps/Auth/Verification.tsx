@@ -26,14 +26,12 @@ export default function VerificationForm() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("/api/auth/verification", {
+      const response = await axios.post("/api/auth/confirm-user", {
         email: form.values.email,
-        confirmationCode: form.values.confirmationCode,
+        code: form.values.confirmationCode,
       });
 
-      if (response.status === 200) {
-        router.push("/auth");
-      }
+      if (response.status === 200) router.push("/auth");
     } catch (error) {
       console.error("Error confirming user: ", error);
     }

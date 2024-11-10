@@ -2,8 +2,9 @@ import Image from "next/image";
 import classes from "./Header.module.css";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
+// import { revokeOAuthToken } from "@lib/auth/cognito";
 import { Container, Group, Button } from "@mantine/core";
-import { revokeOAuthToken } from "@lib/auth/cognito";
+import axios from "axios";
 
 const links = [
   { link: "/", label: "Home" },
@@ -31,12 +32,13 @@ export default function Header() {
 
   const logout = async () => {
     try {
-      const revoke = await revokeOAuthToken();
-      if (!revoke) throw new Error("Error revoking token");
+      const res = await axios.get("/api/auth/logout", {
+        withCredentials: true,
+      });
 
-      sessionStorage.clear();
-
-      window.location.href = `${process.env.COGNITO_DOMAIN}/logout?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&logout_uri=${process.env.COGNITO_LOGOUT_URI}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
+      if (res.status === 200) {
+        window.location.href = `${process.env.COGNITO_DOMAIN}/logout?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&logout_uri=${process.env.COGNITO_LOGOUT_URI}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
+      }
     } catch (error) {
       console.error("Error logging out: ", error);
     }

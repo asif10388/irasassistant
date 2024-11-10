@@ -1,7 +1,7 @@
-import { Loader } from "@mantine/core";
+import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { exchangeTokenWithCode, getCurrentUser } from "@lib/auth/cognito";
+import { getCognitoUser, getCurrentUser } from "@lib/auth/cognito";
 
 export default function withAuth(Component: React.FC<any>) {
   return function WithAuth(
@@ -14,45 +14,35 @@ export default function withAuth(Component: React.FC<any>) {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // Prevent double execution in development mode (Strict Mode)
     const isInitialRender = useRef(true);
 
     useEffect(() => {
       const authenticateUser = async () => {
-        const code = search.get("code");
-        const accessToken = sessionStorage.getItem("accessToken");
+        try {
+          const res = await axios.get("/api/auth/verify-user", {
+            withCredentials: true,
+          });
 
-        // Check if access token already exists (avoid unnecessary calls)
-        if (accessToken) {
-          const user = await getCurrentUser();
-          setIsAuthenticated(!!user);
-          setLoading(false);
-          return;
-        }
-
-        // If no access token, and a code exists (Google sign-in flow)
-        if (code && !accessToken) {
-          const tokenExchangeResult = await exchangeTokenWithCode(code);
-          if (tokenExchangeResult) {
-            const user = await getCurrentUser();
-            setIsAuthenticated(!!user);
+          if (res.status === 200) {
+            setIsAuthenticated(true);
+            setLoading(false);
+            return;
           }
+        } catch (error) {
+          setLoading(false);
         }
-
-        setLoading(false);
       };
 
-      // Avoid running the effect twice in development mode
       if (isInitialRender.current) {
         isInitialRender.current = false;
         authenticateUser();
       }
     }, [router, search]);
 
-    if (loading) return <Loader color="blue" />;
+    if (loading) return <p>Loading...</p>;
 
     if (!isAuthenticated) {
-      router.push("/auth");
+      router.push(process.env.NEXT_PUBLIC_REDIRECT_URL_LOGIN!);
       return null;
     }
 

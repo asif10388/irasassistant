@@ -1,5 +1,6 @@
 "use client";
 
+import { v4 as uuidv4 } from "uuid";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { GoogleButton } from "@assets/GoogleButton";
@@ -47,16 +48,13 @@ export default function AuthenticationForm(props: PaperProps) {
   const handleSubmit = async () => {
     try {
       if (type === "register") {
-        const response = await axios.post("/api/auth/register", {
+        const res = await axios.post("/api/auth/register", {
+          username: uuidv4(),
           email: form.values.email,
           password: form.values.password,
         });
 
-        if (response.status === 200) {
-          router.push(`/auth/verification?email=${form.values.email}`);
-        }
-
-        return;
+        if (res.status === 200) router.push(`/auth/verification?email=${form.values.email}`);
       }
 
       const response = await axios.post("/api/auth/login", {
@@ -64,18 +62,20 @@ export default function AuthenticationForm(props: PaperProps) {
         password: form.values.password,
       });
 
-      if (response.status === 200) {
-        router.push("/dashboard");
-      }
-    } catch (error) {
+      if (response.status === 200) router.push("/dashboard");
+    } catch (error: any) {
       console.error("Error logging in: ", error);
 
       notifications.show({
         color: "red",
         title: "Error",
-        message: "Error logging in",
+        message: error.response?.data.error || "Failed to login",
       });
     }
+  };
+
+  const redirectToGoogle = async () => {
+    window.location.href = "/api/oauth/oauth-login?flow=register";
   };
 
   return (
@@ -85,13 +85,11 @@ export default function AuthenticationForm(props: PaperProps) {
           Welcome to Mantine, {type} with
         </Text>
 
-        <a
-          href={`${process.env.COGNITO_DOMAIN}/oauth2/authorize?identity_provider=Google&client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&scope=${process.env.COGNITO_SCOPE}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}&prompt=select_account`}
-        >
+        <span onClick={redirectToGoogle}>
           <Group grow mb="md" mt="md">
             <GoogleButton radius="xl">Google</GoogleButton>
           </Group>
-        </a>
+        </span>
 
         <Divider label="Or continue with email" labelPosition="center" my="lg" />
 

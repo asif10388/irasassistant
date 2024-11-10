@@ -1,23 +1,33 @@
-import { NextRequest } from "next/server";
-import { signUpWithEmail } from "@lib/auth/cognito";
+import { NextRequest, NextResponse } from "next/server";
+import { checkUserExists, signUpWithEmail } from "@lib/auth/cognito";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const { email, username, password } = await request.json();
 
-    if (!email || !password) {
-      return new Response("Email and password are required", { status: 400 });
+    if (!email || !username || !password) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const response = await signUpWithEmail(email, password);
+    const existingUser = await checkUserExists(email);
 
-    if (!response) {
-      return new Response("Error signing up", { status: 400 });
+    if (existingUser) {
+      return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
 
-    return new Response("Signed up successfully", { status: 200 });
-  } catch (error) {
-    console.error("Error signing up: ", error);
-    throw error;
+    const createUserResponse = await signUpWithEmail(email, username, password);
+
+    if (!createUserResponse) {
+      return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: "User registered successfully" }, { status: 200 });
+  } catch (error: any) {
+    const statusCode = error.statusCode || 500;
+
+    return NextResponse.json(
+      { error: error.message || "Internal Server Error" },
+      { status: statusCode }
+    );
   }
 }

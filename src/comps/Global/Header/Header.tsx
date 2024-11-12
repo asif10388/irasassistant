@@ -36,6 +36,8 @@ export default function Header() {
         withCredentials: true,
       });
 
+      window.location.href = "/auth";
+
       if (res.status === 200) {
         window.location.href = `${process.env.COGNITO_DOMAIN}/logout?client_id=${process.env.COGNITO_CLIENT_ID}&response_type=${process.env.COGNITO_RESPONSE_TYPE}&logout_uri=${process.env.COGNITO_LOGOUT_URI}&redirect_uri=${process.env.COGNITO_REDIRECT_URI}`;
       }

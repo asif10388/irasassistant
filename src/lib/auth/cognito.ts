@@ -174,7 +174,7 @@ export const linkGoogleAccountToCognitoUser = async (
     },
   });
 
-  console.log(username, googleUserId, googleIdToken);
+  console.log(username, googleUserId);
 
   const params = {
     UserPoolId: process.env.COGNITO_USER_POOL_ID,

@@ -21,9 +21,9 @@ const OauthCallbackPage = () => {
 
         if (res?.data?.reAuthenticate) {
           window.location.href = `/api/oauth/oauth-login?flow=login&login_hint=${res.data.login_hint}`;
+        } else {
+          router.push("/dashboard");
         }
-
-        router.push("/dashboard");
       }
     }
 

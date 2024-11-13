@@ -166,7 +166,7 @@ export const linkGoogleAccountToCognitoUser = async (
   googleUserId: string,
   googleIdToken: string
 ) => {
-  const cognitoClientWithCredentials = new CognitoIdentityProviderClient({
+  const elevatedCognitoClient = new CognitoIdentityProviderClient({
     region: process.env.AWS_REGION,
     credentials: {
       accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID!,
@@ -191,7 +191,7 @@ export const linkGoogleAccountToCognitoUser = async (
 
   try {
     const command = new AdminLinkProviderForUserCommand(params);
-    const response = await cognitoClientWithCredentials.send(command);
+    const response = await elevatedCognitoClient.send(command);
 
     return response;
   } catch (error) {
